@@ -50,7 +50,7 @@ func awsSession(ctx context.Context, l *localstack.LocalStackContainer) (*sessio
 		CredentialsChainVerboseErrors: aws.Bool(true),
 		Credentials:                   credentials.NewStaticCredentials(accesskey, secretkey, token),
 		S3ForcePathStyle:              aws.Bool(true),
-		Endpoint:                      aws.String("http://"+net.JoinHostPort(host, mappedPort.Port())),
+		Endpoint:                      aws.String("http://" + net.JoinHostPort(host, mappedPort.Port())),
 	}
 
 	return session.NewSession(awsConfig)
