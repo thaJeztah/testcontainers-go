@@ -4,7 +4,6 @@ import (
 	"context"
 	"net"
 	"net/netip"
-	"strconv"
 	"testing"
 	"time"
 
@@ -50,7 +49,7 @@ func TestUDPPortBinding(t *testing.T) {
 
 		// Before fix: mappedPort.Port() would return "0"
 		// After fix: mappedPort.Port() returns actual port like "55051"
-		assert.NotEqual(t, uint16(0), mappedPort.Num(), "UDP port should not return '0'")
+		assert.NotEqual(t, "0", mappedPort.Port(), "UDP port should not return '0'")
 		assert.Equal(t, "udp", mappedPort.Proto(), "Protocol should be UDP")
 
 		portNum := mappedPort.Num()
@@ -61,7 +60,7 @@ func TestUDPPortBinding(t *testing.T) {
 		hostIP, err := container.Host(ctx)
 		require.NoError(t, err)
 
-		address := net.JoinHostPort(hostIP, strconv.Itoa(int(mappedPort.Num())))
+		address := net.JoinHostPort(hostIP, mappedPort.Port())
 		conn, err := net.DialTimeout("udp", address, 2*time.Second)
 		require.NoError(t, err, "Should be able to connect to UDP port")
 		conn.Close()
@@ -88,7 +87,7 @@ func TestUDPPortBinding(t *testing.T) {
 		mappedPort, err := container.MappedPort(ctx, tcpPort)
 		require.NoError(t, err)
 
-		assert.NotEqual(t, uint16(0), mappedPort.Num(), "TCP port should not return '0'")
+		assert.NotEqual(t, "0", mappedPort.Port(), "TCP port should not return '0'")
 		assert.Equal(t, "tcp", mappedPort.Proto(), "Protocol should be TCP")
 
 		portNum := mappedPort.Num()
